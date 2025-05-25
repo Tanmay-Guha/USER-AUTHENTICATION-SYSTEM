@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #e2f0ff; padding: 50px; text-align: center; }
+    #dashboard { background: white; padding: 40px; border-radius: 10px; max-width: 700px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    h1 { color: #2c3e50; margin-bottom: 20px; }
+    p { font-size: 18px; color: #34495e; }
+    button { padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 30px; }
+    button:hover { background: #c0392b; }
+  </style>
+</head>
+<body>
+  <div id="dashboard">
+    <h1>Dashboard Page</h1>
+    <p id="message">Checking your login status...</p>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    async function loadDashboard() {
+      const token = localStorage.getItem('token');
+      if (!token) return window.location.href = 'login.html';
+      const res = await fetch('/dashboard', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+
+      if (res.status === 200) {
+        const text = await res.text();
+        document.getElementById('message').innerText = text;
+      } else {
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>
